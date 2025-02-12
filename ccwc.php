@@ -80,5 +80,24 @@ if (count($filenames) > 1) {
 	]));
 }
 
+///
+
+if (count($filenames) === 0) {
+	$contents = stream_get_contents(STDIN);
+
+	$counts = countFile($contents, $modes);
+
+	$output = array_filter([
+		$counts[MODE_LINE] ?? null,
+		$counts[MODE_WORD] ?? null,
+		$counts[MODE_CHARACTER] ?? null,
+		$counts[MODE_MB_CHARACTER] ?? null,
+		$filename ?? null
+	]);
+
+	$lines[] = implode("\t", $output);
+
+}
+
 echo implode(PHP_EOL, $lines);
 echo PHP_EOL;
