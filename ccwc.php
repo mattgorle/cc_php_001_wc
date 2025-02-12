@@ -19,29 +19,37 @@ if ($modes === []) {
 	$modes = MODE_DEFAULT;
 }
 
-$filename = array_slice($argv, $filenamePos);
+$filenames = array_slice($argv, $filenamePos);
 
-$contents = file_get_contents($filename[0]);
+function countFile($filename, $modes): array {
+	$contents = file_get_contents($filename);
 
-$output = [];
+	$output = [];
 
-if (array_key_exists(MODE_LINE, $modes)) {
-	$output[] = count(array_filter(explode(PHP_EOL, $contents), 'strlen'));
+	if (array_key_exists(MODE_LINE, $modes)) {
+		$output[] = count(explode(PHP_EOL, $contents)) - 1;
+	}
+
+	if (array_key_exists(MODE_WORD, $modes)) {
+		$output[] = count(preg_split('/[\s]+/', $contents)) - 1;
+	}
+
+	if (array_key_exists(MODE_CHARACTER, $modes)) {
+		$output[] = strlen($contents);
+	}
+
+	if (array_key_exists(MODE_MB_CHARACTER, $modes)) {
+		$output[] = mb_strlen($contents);
+	}
+
+	$output[] = $filename;
+
+	return $output;
 }
 
-if (array_key_exists(MODE_WORD, $modes)) {
-	$output[] = count(preg_split('/[\s]+/', $contents));
+foreach ($filenames as $filename) {
+	$lines[] = implode("\t", countFile($filename, $modes));
 }
 
-if (array_key_exists(MODE_CHARACTER, $modes)) {
-	$output[] = strlen($contents);
-}
-
-if (array_key_exists(MODE_MB_CHARACTER, $modes)) {
-	$output[] = mb_strlen($contents);
-}
-
-$output[] = $filename[0];
-
-echo implode("\t", $output);
+echo implode(PHP_EOL, $lines);
 echo PHP_EOL;
