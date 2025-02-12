@@ -26,6 +26,10 @@ if (array_key_exists(MODE_MB_CHARACTER, $modes)) {
 	$output[] = mb_strlen($contents);
 }
 
+if (array_key_exists(MODE_WORD, $modes)) {
+	$output[] = count(preg_split('/[\s]+/', $contents));
+}
+
 $output[] = $filename[0];
 
 echo implode(' ', $output);
