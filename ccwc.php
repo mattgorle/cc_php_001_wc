@@ -6,8 +6,19 @@ const MODE_CHARACTER = 'c';
 const MODE_LINE = 'l';
 const MODE_WORD = 'w';
 
+const MODE_DEFAULT = [
+	MODE_CHARACTER => false,
+	MODE_WORD => false,
+	MODE_LINE => false,
+];
+
 $filenamePos = null;
 $modes = getopt('clmw', [], $filenamePos);
+
+if ($modes === []) {
+	$modes = MODE_DEFAULT;
+}
+
 $filename = array_slice($argv, $filenamePos);
 
 $contents = file_get_contents($filename[0]);
@@ -18,6 +29,10 @@ if (array_key_exists(MODE_LINE, $modes)) {
 	$output[] = count(array_filter(explode(PHP_EOL, $contents), 'strlen'));
 }
 
+if (array_key_exists(MODE_WORD, $modes)) {
+	$output[] = count(preg_split('/[\s]+/', $contents));
+}
+
 if (array_key_exists(MODE_CHARACTER, $modes)) {
 	$output[] = strlen($contents);
 }
@@ -26,11 +41,7 @@ if (array_key_exists(MODE_MB_CHARACTER, $modes)) {
 	$output[] = mb_strlen($contents);
 }
 
-if (array_key_exists(MODE_WORD, $modes)) {
-	$output[] = count(preg_split('/[\s]+/', $contents));
-}
-
 $output[] = $filename[0];
 
-echo implode(' ', $output);
+echo implode("\t", $output);
 echo PHP_EOL;
