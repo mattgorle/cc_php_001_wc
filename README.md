@@ -40,3 +40,16 @@ This can be either via a pipe or redirector.
 $ cat file | ./ccwc.php
 $ ./ccwc.php < file
 ```
+
+## Performance vs original wc
+
+Unsurprisingly, this is roughly an order of magnitude slower than GNU coreutils.
+
+When processing the test document, the timings are as follows:
+
+| Implementation | Wall time |
+|---|---|
+| coreutils WC | 0.007 s |
+| ccwc.php (PHP 8.4) | 0.040s |
+
+Roughly 6x slower
