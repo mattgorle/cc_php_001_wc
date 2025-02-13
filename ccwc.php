@@ -68,6 +68,10 @@ function countMultipleFiles(array $filenames, array $modes): array
 	];
 
 	foreach ($filenames as $filename) {
+		if (! is_file($filename)) {
+			continue;
+		}
+
 		$contents = file_get_contents($filename);
 		$counts = countFile($contents, $modes);
 
@@ -94,11 +98,8 @@ function countStdin(array $modes): array
 	return [formatOutputLine($counts)];
 }
 
-if (count($filenames) > 0) {
-	$lines = countMultipleFiles($filenames, $modes);
-} else {
-	$lines = countStdin($modes);
-}
+$lines = count($filenames) ? countMultipleFiles($filenames, $modes) : countStdin($modes);
 
 echo implode(PHP_EOL, $lines);
 echo PHP_EOL;
+
