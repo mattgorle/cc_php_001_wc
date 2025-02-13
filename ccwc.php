@@ -21,9 +21,9 @@ if ($modes === []) {
 
 $filenames = array_slice($argv, $filenamePos);
 
-function countFile($contents, $modes): array {
-
-	$output = [ ];
+function countFile($contents, $modes): array 
+{
+	$output = [];
  
 	if (array_key_exists(MODE_LINE, $modes)) {
 		$output[MODE_LINE] = count(explode(PHP_EOL, $contents)) - 1;
@@ -44,59 +44,60 @@ function countFile($contents, $modes): array {
 	return $output;
 }
 
-$totals = [
-	MODE_LINE => 0,
-	MODE_WORD => 0,
-	MODE_CHARACTER => 0,
-	MODE_MB_CHARACTER => 0
-];
+function formatOutputLine(array $countData, ?string $filename = null): string
+{
+		return implode(
+			"\t", 
+			array_filter([
+				$countData[MODE_LINE] ?? null,
+				$countData[MODE_WORD] ?? null,
+				$countData[MODE_CHARACTER] ?? null,
+				$countData[MODE_MB_CHARACTER] ?? null,
+				$filename ?? null
+			])
+		);
+}
 
-foreach ($filenames as $filename) {
-	$contents = file_get_contents($filename);
-	$counts = countFile($contents, $modes);
+function countMultipleFiles(array $filenames, array $modes): array
+{
+	$totals = [
+		MODE_LINE => 0,
+		MODE_WORD => 0,
+		MODE_CHARACTER => 0,
+		MODE_MB_CHARACTER => 0
+	];
 
-	foreach ($counts as $mode => $count) {
-		$totals[$mode] += $count;
+	foreach ($filenames as $filename) {
+		$contents = file_get_contents($filename);
+		$counts = countFile($contents, $modes);
+
+		foreach ($counts as $mode => $count) {
+			$totals[$mode] += $count;
+		}
+
+		$lines[] = formatOutputLine($counts, $filename);
 	}
 
-	$output = array_filter([
-		$counts[MODE_LINE] ?? null,
-		$counts[MODE_WORD] ?? null,
-		$counts[MODE_CHARACTER] ?? null,
-		$counts[MODE_MB_CHARACTER] ?? null,
-		$filename ?? null
-	]);
+	if (count($filenames) > 1) {
+		$lines[] = formatOutputLine($totals, 'total');
+	}
 
-	$lines[] = implode("\t", $output);
+	return $lines;
 }
 
-if (count($filenames) > 1) {
-	$lines[] = implode("\t", array_filter([
-		$totals[MODE_LINE] ?? null,
-		$totals[MODE_WORD] ?? null,
-		$totals[MODE_CHARACTER] ?? null,
-		$totals[MODE_MB_CHARACTER] ?? null,
-		'total'
-	]));
-}
-
-///
-
-if (count($filenames) === 0) {
+function countStdin(array $modes): array
+{
 	$contents = stream_get_contents(STDIN);
 
 	$counts = countFile($contents, $modes);
 
-	$output = array_filter([
-		$counts[MODE_LINE] ?? null,
-		$counts[MODE_WORD] ?? null,
-		$counts[MODE_CHARACTER] ?? null,
-		$counts[MODE_MB_CHARACTER] ?? null,
-		$filename ?? null
-	]);
+	return [formatOutputLine($counts)];
+}
 
-	$lines[] = implode("\t", $output);
-
+if (count($filenames) > 0) {
+	$lines = countMultipleFiles($filenames, $modes);
+} else {
+	$lines = countStdin($modes);
 }
 
 echo implode(PHP_EOL, $lines);
