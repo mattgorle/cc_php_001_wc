@@ -1,0 +1,19 @@
+{
+    "name": "mattgorle/cc_wc",
+    "description": "wc (Coding Challenge 001)",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Gorle\\Wc\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Matt Gorle"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^12.0",
+        "laravel/pint": "^1.20"
+    }
+}
