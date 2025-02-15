@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Gorle\Wc\CountMode;
 use Gorle\Wc\InputMode;
 use Gorle\Wc\Options;
@@ -44,7 +46,8 @@ class OptionsTest extends TestCase
     }
 
     #[DataProvider('duplicateCountModesProvider')]
-    public function test_count_modes_are_only_added_once(array $countModes, array $expectedCountModes) {
+    public function test_count_modes_are_only_added_once(array $countModes, array $expectedCountModes)
+    {
         $options = new Options;
         $options->addCountModes($countModes);
 
@@ -55,7 +58,8 @@ class OptionsTest extends TestCase
     }
 
     #[DataProvider('noisyCountModesProvider')]
-    public function test_only_valid_count_modes_are_added(array $countModes, array $expectedCountModes) {
+    public function test_only_valid_count_modes_are_added(array $countModes, array $expectedCountModes)
+    {
         $options = new Options;
         $options->addCountModes($countModes);
 
@@ -67,21 +71,23 @@ class OptionsTest extends TestCase
     }
 
     #[DataProvider('filenamesProvider')]
-    public function test_files_are_added(array $filenames) {
+    public function test_files_are_added(array $filenames)
+    {
         $options = new Options;
 
-        array_walk($filenames, fn($file) => $options->addFilename($file));
+        array_walk($filenames, fn ($file) => $options->addFilename($file));
 
         $optionsFilenames = $options->filenames();
 
-        array_walk($filenames, fn($file) => $this->assertTrue(array_search($file, $optionsFilenames) !== false));
+        array_walk($filenames, fn ($file) => $this->assertTrue(array_search($file, $optionsFilenames) !== false));
     }
 
     #[DataProvider('filenamesAndInputModesProvider')]
-    public function test_input_mode_is_determined(array $filenames, InputMode $expectedInputMode) {
+    public function test_input_mode_is_determined(array $filenames, InputMode $expectedInputMode)
+    {
         $options = new Options;
 
-        array_walk($filenames, fn($file) => $options->addFilename($file));
+        array_walk($filenames, fn ($file) => $options->addFilename($file));
 
         $this->assertEquals($expectedInputMode, $options->inputMode());
     }
@@ -152,19 +158,19 @@ class OptionsTest extends TestCase
 
     public static function filenamesProvider(): iterable
     {
-        yield '1: Single filename' => [ ['my_file'] ];
-        yield '2: Multiple filenames' => [ ['my_file', 'my_second_file'] ];
+        yield '1: Single filename' => [['my_file']];
+        yield '2: Multiple filenames' => [['my_file', 'my_second_file']];
     }
 
     public static function filenamesAndInputModesProvider(): iterable
     {
-        yield '1: FILE Mode' => [ 
+        yield '1: FILE Mode' => [
             ['my_file'],
-            InputMode::FILE
+            InputMode::FILE,
         ];
-        yield '2: STDIN Mode' => [ 
-            [] ,
-            InputMode::STDIN
+        yield '2: STDIN Mode' => [
+            [],
+            InputMode::STDIN,
         ];
     }
 }
