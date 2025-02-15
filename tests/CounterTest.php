@@ -9,9 +9,7 @@ class CounterTest extends TestCase {
     #[DataProvider('countByModeProvider')]
     public function test_count_by_mode(CountMode $countMode, string $content, int $expectedResult)
     {
-        $counter = new Counter();
-
-        $result = $counter->count($content, $countMode);
+        $result = Counter::count($content, $countMode);
 
         $this->assertEquals($expectedResult, $result);
     }
