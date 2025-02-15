@@ -6,6 +6,8 @@ See https://codingchallenges.fyi/challenges/challenge-wc
 
 This is being implemented in php - as vanilla as I can stand!
 
+[`strict_mode`](https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.strict) is enabled throughout.
+
 ## Requirements
 
 - [PHP](https://php.net) 8.4
