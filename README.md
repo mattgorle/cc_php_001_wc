@@ -6,6 +6,25 @@ See https://codingchallenges.fyi/challenges/challenge-wc
 
 This is being implemented in php - as vanilla as I can stand!
 
+## Requirements
+
+- [PHP](https://php.net) 8.4
+- [composer](https://getcomposer.org)
+
+## Installation
+
+```bash
+$ git clone https://github.com/mattgorle/cc_php_001_wc
+$ cd cc_php_001_wc
+$ composer install
+```
+
+## Running Tests
+
+```bash
+vendor/bin/phpunit
+```
+
 ## Counting modes
 
 As of now, this supports the following modes:
