@@ -10,7 +10,23 @@ class CounterTest extends TestCase
     #[DataProvider('countByModeProvider')]
     public function test_count_by_mode(CountMode $countMode, string $content, int $expectedResult)
     {
+        Counter::reset();
+
         $result = Counter::count($content, $countMode);
+
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    #[DataProvider('countByWordsChunkProvider')]
+    public function test_count_by_word_handles_chunk_boundaries(array $chunks, int $expectedResult)
+    {
+        Counter::reset();
+
+        $result = 0;
+
+        foreach ($chunks as $chunk) {
+            $result += Counter::count($chunk, CountMode::WORD);
+        }
 
         $this->assertEquals($expectedResult, $result);
     }
@@ -93,6 +109,30 @@ class CounterTest extends TestCase
             CountMode::WORD,
             file_get_contents(__DIR__.'/art_of_war.txt'),
             58_164,
+        ];
+    }
+
+    public static function countByWordsChunkProvider(): iterable
+    {
+        yield '1: Single chunk' => [
+            ['one chunk with five words'],
+            5,
+        ];
+
+        yield '2.1: Multiple chunks, not overlapping' => [
+            [
+                'one chunk with five words ',
+                'and another with five more',
+            ],
+            10,
+        ];
+
+        yield '2.2: Multiple chunks, overlapping' => [
+            [
+                'one chunk with five word',
+                'sand another with four more',
+            ],
+            9,
         ];
     }
 }
