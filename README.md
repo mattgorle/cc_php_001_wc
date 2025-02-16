@@ -4,14 +4,24 @@
 
 See https://codingchallenges.fyi/challenges/challenge-wc
 
-This is being implemented in php - as vanilla as I can stand!
+This has been implemented in php - as vanilla as I can stand!
+
+Initially, this was implemented as a procedural single-file solution, then re-implemented using OOP.
+
+Both versions are included in this repository:
+
+- Procedural version: `ccwc.php`
+- OOP version: `ccwc`
 
 [`strict_mode`](https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.strict) is enabled throughout.
 
 ## Requirements
 
-- [PHP](https://php.net) 8.4
+- [PHP](https://php.net) >= 8.1
 - [composer](https://getcomposer.org)
+
+> [!note]
+> `ccwc` has been developed using PHP 8.4, but is backwards compatible as far as 8.1
 
 ## Installation
 
@@ -94,3 +104,19 @@ However, it is 20-30% faster when processing a 33MB test file
 |---|---|
 | ccwc (PHP 8.4) | 0.7s |
 | ccwc.php (PHP 8.4) | 1.0s |
+
+## Differences between the Procedural and OOP versions
+
+### Procedural
+- No automated test coverage
+- Easier to understand the code at a glance
+- No large file support (limited to roughly system RAM / 4)
+- Output is less authentic when compared to coreutils `wc`
+- Faster than OOP on smaller files, slower on larger files
+- Reads the entire file into memory for processing
+
+### OOP
+- Good level of automated test coverage
+- Supports files of potentially any size (files are loaded in 16MB pages)
+- Output closely matches coreutils `wc`
+
