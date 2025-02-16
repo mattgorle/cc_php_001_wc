@@ -27,13 +27,13 @@ class Wc
 
     protected static function countMultipleFiles(array $files): void
     {
-        array_walk($files, 'static::handleEachFile');
+        array_walk($files, [static::class, 'handleEachFile']);
     }
 
     protected static function handleEachFile($file)
     {
         if ($file !== STDIN && is_dir($file)) {
-            static::$displayPrinter->addLine("${file}: Is a directory", LineType::LITERAL);
+            static::$displayPrinter->addLine("{$file}: Is a directory", LineType::LITERAL);
             static::$displayPrinter->addLine([...static::createZeroCountArray(), 'title' => $file]);
         }
 
