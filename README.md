@@ -21,7 +21,7 @@ Both versions are included in this repository:
 - [composer](https://getcomposer.org)
 
 > [!note]
-> `ccwc` has been developed using PHP 8.4, but is backwards compatible as far as 8.1
+> `ccwc` has been developed using PHP 8.4, but is backwards compatible as far as PHP 8.1
 
 ## Installation
 
@@ -34,7 +34,7 @@ $ composer install
 ## Running Tests
 
 ```bash
-vendor/bin/phpunit
+$ vendor/bin/phpunit
 ```
 
 ## Counting modes
@@ -98,7 +98,7 @@ processing the 335KB test file.
 | ccwc (PHP 8.4) | 0.065s |
 | ccwc.php (PHP 8.4) | 0.060s |
 
-However, it is 20-30% faster when processing a 33MB test file
+However, it is 20-30% faster when processing a 33MB test file.
 
 | Implementation | Wall time |
 |---|---|
@@ -114,9 +114,10 @@ However, it is 20-30% faster when processing a 33MB test file
 - Output is less authentic when compared to coreutils `wc`
 - Faster than OOP on smaller files, slower on larger files
 - Reads the entire file into memory for processing
+- Uses no third-party libraries
 
 ### OOP
 - Good level of automated test coverage
 - Supports files of potentially any size (files are loaded in 16MB pages)
 - Output closely matches coreutils `wc`
-
+- Delegates CLI argument parsing to [`vanilla/garden-cli`](https://github.com/vanilla/garden-cli)
