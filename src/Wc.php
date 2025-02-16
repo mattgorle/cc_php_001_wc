@@ -15,14 +15,13 @@ class Wc
         static::$options = OptionParser::parseOptions($GLOBALS['argv']);
 
         $files = static::$options->inputMode() === InputMode::FILE ? static::$options->filenames() : [STDIN];
-        $countModes = static::$options->countModes();
 
         $displayPrinter = new DisplayPrinter;
 
         foreach ($files as $file) {
             if ($file !== STDIN && is_dir($file)) {
                 $displayPrinter->addLine("${file}: Is a directory", LineType::LITERAL);
-                $displayPrinter->addLine([...static::zeroCount(), 'title' => $file]);
+                $displayPrinter->addLine([...static::createZeroCountArray(), 'title' => $file]);
             }
 
             if ($file !== STDIN && ! is_file($file)) {
@@ -40,7 +39,7 @@ class Wc
         return 0;
     }
 
-    protected static function zeroCount(): array
+    protected static function createZeroCountArray(): array
     {
         $countModes = static::$options->countModes();
         $counts = static::initialiseModesArray();
@@ -56,23 +55,16 @@ class Wc
     {
         $countModes = static::$options->countModes();
         $counts = static::initialiseModesArray();
+
         Counter::reset();
 
-        $handle = is_string($file) ? fopen($file, 'r') : $file;
+        $reader = new FileReader($file);
 
-        do {
-            $content = fread($handle, static::READ_PAGE_SIZE);
-
-            if ($content === false) {
-                continue;
-            }
-
+        foreach ($reader->read() as $page){
             foreach ($countModes as $countMode) {
-                $counts[$countMode->name] += Counter::count($content, $countMode);
+                $counts[$countMode->name] += Counter::count($page, $countMode);
             }
-        } while ($content !== false && ! feof($handle));
-
-        fclose($handle);
+        }
 
         return $counts;
     }
