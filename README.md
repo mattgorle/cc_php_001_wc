@@ -37,6 +37,12 @@ $ composer install
 $ vendor/bin/phpunit
 ```
 
+> [!note]
+> 1. Tests will only run on PHP 8.3 and above
+> 2. A deprecation notice will affect one of the OptionParser tests  
+>    Both the test and the class are behaving as expected and use no deprecated behaviour  
+>    The root cause has been identified within a third-party library and a pull request opened to correct the issue
+
 ## Counting modes
 
 As of now, this supports the following modes:
