@@ -10,18 +10,22 @@ class DisplayPrinter
 
     protected array $activeModes = [];
 
+    protected array $possibleModes = [];
+
     public function __construct(protected array $lines = [], protected array $widths = [])
     {
         foreach (CountMode::cases() as $case) {
             $this->widths[$case->name] = 0;
         }
+
+        $this->possibleModes = array_map(fn (CountMode $mode) => $mode->name, CountMode::cases());
     }
 
     public function addLine(array|string $line, LineType $lineType = LineType::COUNT): static
     {
         $this->lines[] = [
             'type' => $lineType,
-            'data' => $line
+            'data' => $line,
         ];
 
         if ($lineType === LineType::COUNT && is_array($line)) {
@@ -30,7 +34,7 @@ class DisplayPrinter
 
             $keys = array_keys($line);
             $activeModes = array_unique([...$this->activeModes, ...$keys]);
-            $this->activeModes = array_filter($activeModes, fn ($mode) => $mode !== 'title');
+            $this->activeModes = array_filter($activeModes, fn ($mode) => in_array($mode, $this->possibleModes));
         }
 
         return $this;
@@ -58,8 +62,8 @@ class DisplayPrinter
     {
         $totals = [];
 
-        $countLines = array_filter($this->lines, fn($line) => $line['type'] === LineType::COUNT);
-        $countLines = array_map(fn($line) => $line['data'], $countLines);
+        $countLines = array_filter($this->lines, fn ($line) => $line['type'] === LineType::COUNT);
+        $countLines = array_map(fn ($line) => $line['data'], $countLines);
 
         foreach ($this->activeModes as $mode) {
             $totals[$mode] = array_sum(array_column($countLines, $mode));
@@ -82,9 +86,9 @@ class DisplayPrinter
         $output = '';
 
         foreach ($this->lines as $line) {
-            switch($line['type']) {
+            switch ($line['type']) {
                 case LineType::COUNT:
-                    $output .= sprintf($formatString.PHP_EOL, ...array_filter($this->reorderArray($line['data'])));
+                    $output .= sprintf($formatString.PHP_EOL, ...array_filter($this->reorderArray($line['data']), fn ($item) => $item !== null));
                     break;
                 case LineType::LITERAL:
                     $output .= sprintf('%s'.PHP_EOL, $line['data']);
@@ -92,7 +96,7 @@ class DisplayPrinter
             }
         }
 
-        if (count(array_filter($this->lines, fn($line) => $line['type'] === LineType::COUNT)) > 1) {
+        if (count(array_filter($this->lines, fn ($line) => $line['type'] === LineType::COUNT)) > 1) {
             $output .= sprintf($formatString.PHP_EOL, ...array_filter($this->reorderArray($this->calculateTotals())));
         }
 
