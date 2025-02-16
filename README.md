@@ -45,9 +45,9 @@ Input can by given by way of filenames on the CLI or via STDIN.
 One or more file names can be provided as an input argument.  Shell expansion works as expected.
 
 ```bash
-$ ./ccwc.php file
-$ ./ccwc.php file1 file2
-$ ./ccwc.php *
+$ ./ccwc file
+$ ./ccwc file1 file2
+$ ./ccwc *
 ```
 
 > [!note]
@@ -58,11 +58,13 @@ $ ./ccwc.php *
 This can be either via a pipe or redirector.
 
 ```bash
-$ cat file | ./ccwc.php
-$ ./ccwc.php < file
+$ cat file | ./ccwc
+$ ./ccwc < file
 ```
 
-## Performance vs original wc
+## Performance 
+
+### ccwc vs coreutils wc
 
 Unsurprisingly, this is roughly an order of magnitude slower than GNU coreutils.
 
@@ -71,6 +73,24 @@ When processing the test document, the timings are as follows:
 | Implementation | Wall time |
 |---|---|
 | coreutils WC | 0.007 s |
-| ccwc.php (PHP 8.4) | 0.040s |
+| ccwc (PHP 8.4) | 0.065s |
+| ccwc.php (PHP 8.4) | 0.060s |
 
-Roughly 6x slower
+Roughly 9x slower
+
+### OOP vs Procedural performance
+
+The OOP rewrite is ~10% slower than the procedural version when
+processing the 335KB test file.
+
+| Implementation | Wall time |
+|---|---|
+| ccwc (PHP 8.4) | 0.065s |
+| ccwc.php (PHP 8.4) | 0.060s |
+
+However, it is 20-30% faster when processing a 33MB test file
+
+| Implementation | Wall time |
+|---|---|
+| ccwc (PHP 8.4) | 0.7s |
+| ccwc.php (PHP 8.4) | 1.0s |
