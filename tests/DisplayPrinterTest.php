@@ -132,8 +132,8 @@ EOF
                 ],
                 [
                     'type' => LineType::LITERAL,
-                    'data' => 'Foo'
-                ]
+                    'data' => 'Foo',
+                ],
             ],
             <<<'EOF'
  10 125 750 line1
@@ -155,7 +155,7 @@ EOF
                 ],
                 [
                     'type' => LineType::LITERAL,
-                    'data' => 'Foo'
+                    'data' => 'Foo',
                 ],
                 [
                     'type' => LineType::COUNT,
